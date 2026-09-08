@@ -1,0 +1,581 @@
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+:root {
+    --bg-primary: #0b0f19;
+    --bg-secondary: #131720;
+    --bg-card: #1a1e2e;
+    --bg-card-alt: #1e2334;
+    --bg-input: #0d111d;
+
+    --accent-orange: #f97316;
+    --accent-orange-hover: #fb923c;
+    --accent-blue: #2563eb;
+    --accent-blue-light: #3b82f6;
+    --accent-green: #10b981;
+
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+
+    --border-color: rgba(148, 163, 184, 0.12);
+    --border-focus: rgba(249, 115, 22, 0.5);
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.25);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+.app-header {
+    text-align: center;
+    padding: 36px 20px 20px;
+}
+
+.app-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--accent-blue-light);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+.app-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+/* ============================================
+   MAIN LAYOUT
+   ============================================ */
+.app-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 28px;
+    align-items: start;
+}
+
+/* ============================================
+   PANELS
+   ============================================ */
+.panel {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-card);
+    padding: 0;
+    overflow: hidden;
+}
+
+/* ============================================
+   TAB SWITCHER
+   ============================================ */
+.tab-switcher {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    flex: 1;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+}
+
+.tab:hover {
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.tab.active {
+    color: var(--accent-orange);
+}
+
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-orange);
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================
+   INPUT LABEL
+   ============================================ */
+.input-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+/* ============================================
+   UPLOAD ZONE
+   ============================================ */
+.upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-input);
+    margin-bottom: 14px;
+}
+
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--accent-orange);
+    background: rgba(249, 115, 22, 0.03);
+}
+
+.upload-placeholder {
+    text-align: center;
+    color: var(--text-tertiary);
+}
+
+.upload-placeholder svg {
+    margin-bottom: 14px;
+    opacity: 0.5;
+}
+
+.upload-placeholder p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.upload-placeholder span {
+    font-size: 0.78rem;
+}
+
+.upload-preview {
+    max-width: 100%;
+    max-height: 320px;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+}
+
+.upload-zone.has-image {
+    border-style: solid;
+    border-color: var(--border-color);
+}
+
+.upload-zone.has-image .upload-placeholder {
+    display: none;
+}
+
+/* ============================================
+   CANVAS
+   ============================================ */
+.canvas-wrapper {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: #000;
+    margin-bottom: 14px;
+}
+
+#drawCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.canvas-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-tertiary);
+    font-size: 0.88rem;
+    font-weight: 500;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.canvas-hint.hidden {
+    opacity: 0;
+}
+
+.brush-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(148, 163, 184, 0.15);
+    outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-orange);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(249, 115, 22, 0.4);
+}
+
+.brush-preview {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn.full-width {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.btn-primary {
+    background: var(--accent-orange);
+    color: white;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--accent-orange-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+}
+
+/* ============================================
+   RESULT CARD (Blue)
+   ============================================ */
+.result-card {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    border-radius: var(--radius-lg);
+    padding: 32px 24px;
+    text-align: center;
+    margin: 20px;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 30px rgba(37, 99, 235, 0.3);
+}
+
+.result-card-empty {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+}
+
+.result-card-loading {
+    color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.result-card-content {
+    color: white;
+    width: 100%;
+}
+
+.result-title {
+    font-size: 0.78rem;
+    letter-spacing: 2px;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-bottom: 8px;
+}
+
+.digit-display {
+    font-size: 4.5rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 12px;
+    animation: digitPop 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes digitPop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.confidence-tag {
+    font-size: 0.95rem;
+    background: rgba(255, 255, 255, 0.18);
+    padding: 6px 18px;
+    border-radius: 20px;
+    display: inline-block;
+    backdrop-filter: blur(4px);
+}
+
+.confidence-tag strong {
+    font-weight: 700;
+}
+
+/* ============================================
+   RESULTS ROW (Preview + Predictions)
+   ============================================ */
+.results-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 0 20px 20px;
+}
+
+.preview-box,
+.predictions-box {
+    background: var(--bg-card-alt);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    padding: 16px;
+}
+
+.box-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-tertiary);
+    margin-bottom: 12px;
+}
+
+.preview-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+}
+
+.model-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    image-rendering: pixelated;
+    background: #000;
+}
+
+/* ============================================
+   TOP PREDICTIONS
+   ============================================ */
+.top-digit {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.top-indicator {
+    height: 3px;
+    background: var(--accent-orange);
+    border-radius: 2px;
+    margin: 0 auto 14px;
+    width: 40px;
+}
+
+.prob-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.prob-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.prob-digit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    width: 16px;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.prob-bar-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(148, 163, 184, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.prob-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--accent-orange);
+    width: 0%;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.prob-bar-fill.secondary {
+    background: var(--text-tertiary);
+}
+
+.prob-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    width: 40px;
+    text-align: right;
+    color: var(--text-tertiary);
+}
+
+.prob-value.highlight {
+    color: var(--accent-orange);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.app-footer {
+    text-align: center;
+    padding: 28px 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 24px;
+}
+
+.app-footer p {
+    font-size: 0.82rem;
+    color: var(--text-tertiary);
+}
+
+.app-footer strong {
+    color: var(--accent-orange);
+    font-weight: 700;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .app-main {
+        grid-template-columns: 1fr;
+        padding: 0 16px;
+    }
+
+    .app-title {
+        font-size: 1.6rem;
+    }
+
+    .results-row {
+        grid-template-columns: 1fr;
+    }
+}
