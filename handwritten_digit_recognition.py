@@ -136,6 +136,16 @@ if len(incorrect) > 0:
 model.save("handwritten_digit_model.keras")
 print("\nModel saved as handwritten_digit_model.keras")
 
+# Export weights for ultra-lightweight deployment (Vercel / cloud)
+weights = model.get_weights()
+np.savez_compressed(
+    "model_weights.npz",
+    w1=weights[0], b1=weights[1],
+    w2=weights[2], b2=weights[3],
+    w3=weights[4], b3=weights[5]
+)
+print("Model weights exported to model_weights.npz for lightweight production deployment!")
+
 # Test loading the saved model
 loaded_model = tf.keras.models.load_model("handwritten_digit_model.keras")
 print("Model loaded successfully!")
