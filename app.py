@@ -85,14 +85,16 @@ def load_model():
 model = load_model()
 
 
-@app.route("/")
-@app.route("/api")
-@app.route("/api/")
-@app.route("/api/index")
-@app.route("/api/index/")
-@app.route("/api/index.py")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/api", methods=["GET", "POST"])
+@app.route("/api/", methods=["GET", "POST"])
+@app.route("/api/index", methods=["GET", "POST"])
+@app.route("/api/index/", methods=["GET", "POST"])
+@app.route("/api/index.py", methods=["GET", "POST"])
 def index():
-    """Serve the main UI page with resilient template lookup."""
+    """Serve the main UI page on GET, or handle prediction on POST if rewritten."""
+    if request.method == "POST":
+        return predict()
     try:
         return render_template("index.html")
     except Exception:
