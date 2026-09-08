@@ -1,5 +1,7 @@
 # Handwritten Digit Recognition with Deep Learning & Web App
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A full-stack Deep Learning web application built using **TensorFlow**, **NumPy**, and **Flask** to recognize handwritten digits (0 to 9) in real time with **~98% test accuracy**. Features an interactive drawing canvas, image upload support, official MNIST-style bounding-box and center-of-mass preprocessing, and an ultra-lightweight pure-NumPy inference engine deployed live on **Vercel**.
 
 ---
@@ -179,3 +181,9 @@ To deploy your own fork:
 ## Author
 
 Built by **pacific**
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
