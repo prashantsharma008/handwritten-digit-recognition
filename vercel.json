@@ -1,9 +1,14 @@
 {
   "version": 2,
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "{templates/**,static/**,model_weights.npz}"
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/index"
+      "destination": "/api/index.py"
     }
   ]
 }

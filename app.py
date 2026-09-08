@@ -1,21 +1,38 @@
 import os
 import numpy as np
 from PIL import Image
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import base64
 import io
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
+def find_path(rel_path):
+    """Find a relative path across possible deployment directory layouts."""
+    candidates = [
+        os.path.join(BASE_DIR, rel_path),
+        os.path.join(BASE_DIR, "api", rel_path),
+        os.path.join(os.path.dirname(__file__), rel_path),
+        os.path.join(os.path.dirname(__file__), "..", rel_path),
+        os.path.join(os.getcwd(), rel_path),
+        os.path.join(os.getcwd(), "api", rel_path),
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return os.path.abspath(c)
+    return os.path.join(BASE_DIR, rel_path)
+
+
 app = Flask(
     __name__,
-    template_folder=os.path.join(BASE_DIR, "templates"),
-    static_folder=os.path.join(BASE_DIR, "static"),
+    template_folder=find_path("templates"),
+    static_folder=find_path("static"),
     static_url_path="/static"
 )
 
-WEIGHTS_PATH = os.path.join(BASE_DIR, "model_weights.npz")
-KERAS_PATH = os.path.join(BASE_DIR, "handwritten_digit_model.keras")
+WEIGHTS_PATH = find_path("model_weights.npz")
+KERAS_PATH = find_path("handwritten_digit_model.keras")
 
 
 class DigitClassifier:
@@ -47,19 +64,21 @@ class DigitClassifier:
 
 def load_model():
     """Load pure-NumPy model or fallback to Keras model if available."""
-    if os.path.exists(WEIGHTS_PATH):
-        print(f"Loading ultra-lightweight pure-NumPy model from {WEIGHTS_PATH}...")
-        return DigitClassifier(WEIGHTS_PATH)
+    weights_file = find_path("model_weights.npz")
+    if os.path.exists(weights_file):
+        print(f"Loading ultra-lightweight pure-NumPy model from {weights_file}...")
+        return DigitClassifier(weights_file)
 
-    if os.path.exists(KERAS_PATH):
+    keras_file = find_path("handwritten_digit_model.keras")
+    if os.path.exists(keras_file):
         try:
             import tensorflow as tf
-            print(f"Loading Keras model from {KERAS_PATH}...")
-            return tf.keras.models.load_model(KERAS_PATH)
+            print(f"Loading Keras model from {keras_file}...")
+            return tf.keras.models.load_model(keras_file)
         except ImportError:
             pass
 
-    raise FileNotFoundError("Model file not found. Ensure model_weights.npz exists.")
+    raise FileNotFoundError(f"Model file not found. Checked: {weights_file}")
 
 
 # Initialize model at startup
@@ -67,9 +86,31 @@ model = load_model()
 
 
 @app.route("/")
+@app.route("/api")
+@app.route("/api/")
+@app.route("/api/index")
+@app.route("/api/index/")
+@app.route("/api/index.py")
 def index():
-    """Serve the main UI page."""
-    return render_template("index.html")
+    """Serve the main UI page with resilient template lookup."""
+    try:
+        return render_template("index.html")
+    except Exception:
+        html_file = find_path(os.path.join("templates", "index.html"))
+        if os.path.exists(html_file):
+            with open(html_file, "r", encoding="utf-8") as f:
+                return f.read(), 200, {"Content-Type": "text/html; charset=utf-8"}
+        return "<h1>Handwritten Digit Recognition</h1><p>UI loading error</p>", 500
+
+
+@app.route("/static/<path:filename>")
+@app.route("/api/static/<path:filename>")
+@app.route("/api/index/static/<path:filename>")
+@app.route("/api/index.py/static/<path:filename>")
+def custom_static(filename):
+    """Ensure static files are always served even if URL is rewritten by Vercel."""
+    static_dir = find_path("static")
+    return send_from_directory(static_dir, filename)
 
 
 def preprocess_digit_image(pil_img):
@@ -165,6 +206,9 @@ def preprocess_digit_image(pil_img):
 
 
 @app.route("/predict", methods=["POST"])
+@app.route("/api/predict", methods=["POST"])
+@app.route("/api/index/predict", methods=["POST"])
+@app.route("/api/index.py/predict", methods=["POST"])
 def predict():
     """Accept a base64-encoded image and return digit predictions."""
     try:
