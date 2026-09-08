@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Outputs & Saved Models (optional - uncomment if you want to exclude model files)
+outputs/
+# *.keras
+# *.h5
+
+# OS generated files
+.DS_Store
+Thumbs.db
