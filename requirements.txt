@@ -1,5 +1,4 @@
-tensorflow
+tensorflow-cpu
 numpy
-matplotlib
 flask
 pillow

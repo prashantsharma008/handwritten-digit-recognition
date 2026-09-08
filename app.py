@@ -6,9 +6,16 @@ from flask import Flask, render_template, request, jsonify
 import base64
 import io
 
-app = Flask(__name__, template_folder="templates", static_folder="static")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-MODEL_PATH = "handwritten_digit_model.keras"
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates"),
+    static_folder=os.path.join(BASE_DIR, "static"),
+    static_url_path="/static"
+)
+
+MODEL_PATH = os.path.join(BASE_DIR, "handwritten_digit_model.keras")
 
 
 def get_or_train_model():
