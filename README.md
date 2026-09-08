@@ -1,84 +1,181 @@
-# Handwritten Digit Recognition Using Deep Learning & Gradio Web App
+# Handwritten Digit Recognition with Deep Learning & Web App
 
-A deep learning project using TensorFlow/Keras and the MNIST dataset to recognize handwritten digits (0 to 9), featuring an interactive **Gradio drawing web app** that can be deployed online for free.
-
----
-
-## 📁 Project Files
-
-- `handwritten_digit_recognition.py` - Trains the deep learning model and saves `handwritten_digit_model.keras`.
-- `app.py` - Interactive Gradio web interface with a drawing canvas to draw digits and test model predictions in real time.
-- `requirements.txt` - Dependencies (`tensorflow`, `numpy`, `matplotlib`, `gradio`, `pillow`).
+A full-stack Deep Learning web application built using **TensorFlow**, **NumPy**, and **Flask** to recognize handwritten digits (0 to 9) in real time with **~98% test accuracy**. Features an interactive drawing canvas, image upload support, official MNIST-style bounding-box and center-of-mass preprocessing, and an ultra-lightweight pure-NumPy inference engine deployed live on **Vercel**.
 
 ---
 
-## 🛠️ Local Installation & Setup
+## Live Demo & Repository
 
-1. **Install requirements:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Train & Save Model:**
-   ```bash
-   python handwritten_digit_recognition.py
-   ```
-   *This trains the neural network on MNIST dataset and generates `handwritten_digit_model.keras`.*
-
-3. **Run the Gradio Web App locally:**
-   ```bash
-   python app.py
-   ```
-   *Open the printed local URL (e.g. `http://127.0.0.1:7860`) in your web browser to test drawing digits.*
+- **Live Web App**: [https://handwritten-digit-recognition-jhzv.vercel.app](https://handwritten-digit-recognition-jhzv.vercel.app)
+- **GitHub Repository**: [https://github.com/prashantsharma008/handwritten-digit-recognition](https://github.com/prashantsharma008/handwritten-digit-recognition)
 
 ---
 
-## 🌐 How to Host Online for FREE (Hugging Face Spaces)
+## Web Application Preview
 
-You can host this project on **Hugging Face Spaces** for free with zero server maintenance.
+![Handwritten Digit Recognition Web App](outputs/web_app_ui.png)
 
-### Step 1: Create a Hugging Face Account & Space
-1. Go to [huggingface.co](https://huggingface.co/) and sign up or log in.
-2. Click on your profile picture at the top right and select **New Space** (or visit [huggingface.co/new-space](https://huggingface.co/new-space)).
-3. Fill in the details:
-   - **Space name**: `handwritten-digit-recognition` (or any name you prefer)
-   - **License**: `mit`
-   - **Select Space SDK**: **Gradio**
-   - **Space hardware**: **CPU Basic (Free)**
-4. Click **Create Space**.
+---
 
-### Step 2: Upload Files to the Space
-You can upload files via web browser or Git:
+## Key Features
 
-#### Method A: Direct Web Upload (Easiest)
-1. Inside your new Space page, click the **Files** tab.
-2. Click **Add file** -> **Upload files**.
-3. Drag & drop the following 3 files:
-   - `app.py`
-   - `requirements.txt`
-   - `handwritten_digit_model.keras` (generated after running `handwritten_digit_recognition.py`)
-4. Click **Commit changes to main**.
+- **Interactive Drawing Canvas**: HTML5 canvas with adjustable brush sizes, touch support for mobile/tablets, and instant stroke drawing.
+- **Image Upload Zone**: Drag-and-drop or browse digit images in PNG, JPG, or JPEG format.
+- **Real-Time Classification**: Instant predictions with top confidence score and animated probability distribution bars for top 3 predictions.
+- **Official MNIST Preprocessing Pipeline**:
+  - Automatic background brightness inversion (supports dark-on-light and light-on-dark inputs).
+  - Bounding-box detection to isolate strokes regardless of drawing size or canvas position.
+  - 20×20 aspect-ratio preserved scaling with a 4-pixel border margin.
+  - Mass-weighted centroid (Center of Mass) alignment to position the digit's center at (13.5, 13.5) in the 28×28 frame.
+- **28×28 Model Input View**: Previews the preprocessed, centered, and normalized image that the model actually evaluates.
+- **Ultra-Lightweight Production Engine**:
+  - Production inference runs via pure NumPy forward pass using `model_weights.npz` (only **408 KB**).
+  - Zero heavy TensorFlow C++ dependencies at runtime, reducing serverless bundle size from **1.4 GB down to ~35 MB** for instant cold starts on Vercel.
+- **Modern Dark UI**: Crafted with dark theme aesthetics, orange accent action buttons, blue prediction cards, and responsive layout.
 
-#### Method B: Git Clone & Push
-```bash
-git clone https://huggingface.co/spaces/YOUR_USERNAME/handwritten-digit-recognition
-cd handwritten-digit-recognition
-# Copy app.py, requirements.txt, and handwritten_digit_model.keras into this folder
-git add .
-git commit -m "Deploy Gradio app with TensorFlow model"
-git push
+---
+
+## Project Structure
+
+```plaintext
+handwritten-digit-recognition/
+├── api/                                # Vercel serverless function package
+│   ├── index.py                        # WSGI entrypoint for Vercel
+│   ├── model_weights.npz               # Trained neural network weights (408 KB)
+│   ├── static/                         # Bundled static assets
+│   └── templates/                      # Bundled HTML template
+├── public/                             # Static edge CDN assets for Vercel
+│   ├── index.html                      # Root HTML page
+│   └── static/                         # CSS and JS for edge delivery
+├── outputs/                            # Model evaluation plots & preview images
+│   ├── web_app_ui.png                  # Web application UI preview
+│   ├── sample_images.png               # MNIST sample digits
+│   ├── accuracy.png                    # Training & validation accuracy plot
+│   ├── loss.png                        # Training & validation loss plot
+│   ├── predictions.png                 # Test prediction samples
+│   └── incorrect_predictions.png       # Misclassified samples analysis
+├── static/                             # Frontend assets
+│   ├── script.js                       # Canvas drawing, API integration & UI animations
+│   └── style.css                       # Styling, dark theme & responsive layout
+├── templates/
+│   └── index.html                      # Application template
+├── app.py                              # Flask backend application & inference logic
+├── handwritten_digit_recognition.py    # Model training script on MNIST dataset
+├── handwritten_digit_model.keras       # Full trained Keras neural network
+├── model_weights.npz                   # Lightweight compressed weights for deployment
+├── requirements.txt                    # Production dependencies (flask, numpy, pillow)
+└── vercel.json                         # Vercel deployment and routing configuration
 ```
 
-### Step 3: View Your Live Web App!
-Hugging Face will automatically install `requirements.txt`, launch `app.py`, and give you a **public URL** (e.g., `https://huggingface.co/spaces/YOUR_USERNAME/handwritten-digit-recognition`) that anyone can open to draw digits and test predictions!
+---
+
+## Model Architecture
+
+The neural network is trained on the **MNIST dataset** (60,000 training images, 10,000 testing images) normalized to `[0, 1]`:
+
+```plaintext
+Input (28 x 28)
+       │
+    Flatten (784 features)
+       │
+    Dense (128 neurons, ReLU)
+       │
+    Dropout (0.2)
+       │
+    Dense (64 neurons, ReLU)
+       │
+    Dense (10 neurons, Softmax)
+```
+
+- **Optimizer**: Adam
+- **Loss Function**: Sparse Categorical Crossentropy
+- **Epochs**: 10
+- **Batch Size**: 32 (with 10% validation split)
+- **Test Accuracy**: **~98%**
 
 ---
 
-## 🧠 Model Architecture
+## Model Training & Evaluation Visualizations
 
-- Input: 28 x 28 grayscale image
-- Flatten Layer
-- Dense: 128 neurons, ReLU activation
-- Dropout: 20%
-- Dense: 64 neurons, ReLU activation
-- Output: 10 neurons, Softmax activation
+### 1. MNIST Dataset Samples
+Sample images from the MNIST dataset with their corresponding ground-truth digit labels:
+
+![MNIST Sample Digits](outputs/sample_images.png)
+
+### 2. Training and Validation Accuracy
+Accuracy progression over 10 training epochs, reaching ~98% test accuracy:
+
+![Training and Validation Accuracy](outputs/accuracy.png)
+
+### 3. Training and Validation Loss
+Loss curve demonstrating steady convergence with minimal overfitting:
+
+![Training and Validation Loss](outputs/loss.png)
+
+### 4. Sample Model Predictions
+Predictions on test images comparing the predicted class against the actual ground truth:
+
+![Sample Model Predictions](outputs/predictions.png)
+
+### 5. Incorrect Predictions Analysis
+Inspection of ambiguous or noisy test digits where the model made errors:
+
+![Incorrect Predictions Analysis](outputs/incorrect_predictions.png)
+
+---
+
+## Local Installation & Setup
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/prashantsharma008/handwritten-digit-recognition.git
+cd handwritten-digit-recognition
+```
+
+### 2. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+*(Optional: If you want to retrain the model locally with TensorFlow and generate new plots, install `tensorflow` and `matplotlib`: `pip install tensorflow matplotlib`)*
+
+### 3. Run the Web Application
+```bash
+python app.py
+```
+Open your browser and navigate to:
+```
+http://localhost:5000
+```
+
+### 4. Retrain the Model (Optional)
+```bash
+python handwritten_digit_recognition.py
+```
+This will:
+1. Train the neural network on the MNIST dataset.
+2. Generate accuracy and loss plots in `outputs/`.
+3. Save `handwritten_digit_model.keras`.
+4. Automatically export the lightweight weights to `model_weights.npz`.
+
+---
+
+## Deployment on Vercel
+
+The application is configured for deployment on **Vercel**:
+
+- **Serverless Handler**: [`api/index.py`](api/index.py) routes requests to Flask.
+- **Pure-NumPy Forward Pass**: `DigitClassifier` in [`app.py`](app.py) runs matrix multiplications ($W \cdot x + b$ with ReLU and Softmax) using `model_weights.npz` with zero heavyweight TensorFlow dependencies.
+- **Bundle Size**: Only **~35 MB** (well within Vercel's 500 MB limit).
+- **Static Asset Serving**: [`public/`](public/) serves the UI via Vercel's global CDN.
+
+To deploy your own fork:
+1. Import the repository into [Vercel](https://vercel.com).
+2. Keep the default settings and click **Deploy**.
+3. Your web app will be live with full drawing and prediction capabilities!
+
+---
+
+## Author
+
+Built by **pacific**

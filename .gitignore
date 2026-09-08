@@ -13,7 +13,7 @@ ENV/
 .ipynb_checkpoints
 
 # Outputs & Saved Models (optional - uncomment if you want to exclude model files)
-outputs/
+# outputs/
 # *.keras
 # *.h5
 
